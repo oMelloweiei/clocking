@@ -1,5 +1,6 @@
 import 'package:clockify_project/data/controller/historyController.dart';
 import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/models/history/history.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:clockify_project/data/models/timetrack/timetrack.dart';
@@ -12,7 +13,6 @@ class TimetrackController extends GetxController {
   void onInit() {
     super.onInit();
     _timetrackBox = Hive.box<Timetrack>('timetracks');
-    ever(UserController.instance.currentUser, (_) => _loadTimetracks());
     _loadTimetracks();
   }
 
@@ -22,17 +22,12 @@ class TimetrackController extends GetxController {
   }
 
   void addTimetrack(Timetrack timetrack, String today) {
-    print('before add timetrack');
-    final HistoryController historyController = Get.find<HistoryController>();
-    final historyToday = historyController.getHistoryToday(today);
+    final HistoryController historyController = Get.put(HistoryController());
+    final history = historyController.getHistoryToday(today)!;
+    history.timetracksKey.add(timetrack.id);
+    historyController.updateHistory(history);
     _timetrackBox.add(timetrack);
     timetracks.add(timetrack);
-    historyToday!.timetracksKey.add(timetrack.id);
-
-    print('before update history');
-    historyController.updateHistory(historyToday);
-    print('after update history');
-    print('after add timetrack');
   }
 
   Timetrack? getTimetrackById(String id) {

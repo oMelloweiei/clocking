@@ -1,6 +1,7 @@
 import 'package:clockify_project/color.dart';
 import 'package:clockify_project/data/controller/historyController.dart';
 import 'package:clockify_project/data/controller/timetrackController.dart';
+import 'package:clockify_project/data/controller/userController.dart';
 import 'package:clockify_project/data/models/history/history.dart';
 import 'package:clockify_project/data/models/timetrack/timetrack.dart';
 import 'package:clockify_project/popups/projectselect.dart';
@@ -36,12 +37,27 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
   final HistoryController historyController = Get.put(HistoryController());
   final TimetrackController timetrackController =
       Get.put(TimetrackController());
+  late List<History> histories;
+  late var today_history;
 
   @override
   void initState() {
     super.initState();
     now = DateTime.now();
     today = DateFormat.yMMMMEEEEd().format(now);
+    getHistory();
+  }
+
+  void getHistory() {
+    histories = historyController.histories;
+    today_history = historyController.getHistoryToday(today);
+    print(today_history);
+    if (today_history == null) {
+      today_history = History.create(date: today);
+      historyController.createTodayHistory(today_history);
+    }
+
+    print(today_history);
   }
 
   @override
@@ -75,31 +91,6 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     );
   }
 
-  Future<void> _storeTime(
-      Duration duration, Timetrack newTimetrack, String today) async {
-    print('check error before map'); // Added logging for debugging
-    final historyToday = historyController.getHistoryToday(today);
-    if (historyToday == null) {
-      final newHistory = History.create(date: today);
-      print('check error before map'); // Added logging for debugging
-      try {
-        historyController.addHistory(newHistory,
-            timetrack: newTimetrack, today: today);
-        print('after update history');
-      } catch (e) {
-        print('Error adding new history: $e');
-      }
-    } else {
-      print('check error before map'); // Added logging for debugging
-      try {
-        timetrackController.addTimetrack(newTimetrack, today);
-        print('after add timetrack');
-      } catch (e) {
-        print('Error adding new timetrack: $e');
-      }
-    }
-  }
-
   Widget _buildButton() {
     final isRunning = timerUtils.isRunning;
     final isCompleted = timerUtils.duration.inSeconds == 0;
@@ -119,13 +110,13 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
         onPressed: () async {
           if (isRunning) {
             final newTimetrack = Timetrack.create(
-              tagKey: '', // Replace with actual tag key
-              projectKey: '', // Replace with actual project key
+              tagKey: '',
+              projectKey: '',
               time: timerUtils.formattedTime,
               timeStart: timeStart.text,
               timeEnd: timeEnd.text,
             );
-            await _storeTime(timerUtils.duration, newTimetrack, today);
+            timetrackController.addTimetrack(newTimetrack, today);
             setState(() {
               timerUtils.stopTimer(resets: false);
               timerUtils.reset();
@@ -169,10 +160,10 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
             timeStart: timeStart.text,
             timeEnd: timeEnd.text,
           );
-          _storeTime(timerUtils.duration, newTimetrack, today);
+          timetrackController.addTimetrack(newTimetrack, today);
           setState(() {
-            timeEnd.clearComposing();
-            timeStart.clear();
+            timeEnd.text = "00:00";
+            timeStart.text = "00:00";
           });
         },
         child: Text(
@@ -364,19 +355,25 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
           itemBuilder: (context, index) {
             final history = histories[index];
             print('check error before map');
-            return ListTile(
-              title: Text(history.date),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: history.timetracksKey.map((timetrackKey) {
-                  final timetrack = timetracks
-                      .firstWhere((track) => track.id == timetrackKey);
-                  return Text(
-                    '${timetrack.projectKey} - ${timetrack.tagKey}: ${timetrack.timeStart} - ${timetrack.timeEnd} , ${timetrack.time}',
-                  );
-                }).toList(),
-              ),
-            );
+            print('${history.date} , ${history.timetracksKey}');
+            if (history.timetracksKey.isEmpty && history.date == today) {
+              return SizedBox();
+            } else {
+              return ListTile(
+                title: Text(history.date),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: history.timetracksKey.map((timetrackKey) {
+                    final timetrack = timetracks
+                        .firstWhere((track) => track.id == timetrackKey);
+
+                    return Text(
+                      '${timetrack.projectKey} - ${timetrack.tagKey}: ${timetrack.timeStart} - ${timetrack.timeEnd} , ${timetrack.time}',
+                    );
+                  }).toList(),
+                ),
+              );
+            }
           },
         );
       }),

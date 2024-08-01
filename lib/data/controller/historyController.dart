@@ -1,6 +1,4 @@
-import 'package:clockify_project/data/controller/timetrackController.dart';
 import 'package:clockify_project/data/controller/userController.dart';
-import 'package:clockify_project/data/models/timetrack/timetrack.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:clockify_project/data/models/history/history.dart';
@@ -29,31 +27,18 @@ class HistoryController extends GetxController {
           .toList();
 
       histories.assignAll(userHistories);
-    } else {
-      // tags.assignAll(_tagBox.values.toList());
-
-      print(
-          'No current user, loading all tags: ${_historyBox.values.toList()}');
-    }
+    } else {}
   }
 
-  void addHistory(History history, {Timetrack? timetrack, String? today}) {
-    print('before add history');
+  void createTodayHistory(History history) {
     final UserController userController = UserController.instance;
     final currentUser = userController.getCurrentUser();
-    final TimetrackController timetrackController =
-        Get.find<TimetrackController>();
-
-    _historyBox.add(history);
-    histories.add(history);
 
     if (currentUser != null) {
       currentUser.historiesKey.add(history.id);
       userController.updateUser(currentUser);
-    }
-
-    if (timetrack != null && today != null) {
-      timetrackController.addTimetrack(timetrack, today);
+      _historyBox.add(history);
+      histories.add(history);
     }
   }
 
