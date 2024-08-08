@@ -1,5 +1,7 @@
 import 'package:clockify_project/component/circular_checkbox.dart';
+import 'package:clockify_project/data/controller/generalSettingController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class GeneralSettingsTab extends StatefulWidget {
   const GeneralSettingsTab({Key? key}) : super(key: key);
@@ -9,6 +11,9 @@ class GeneralSettingsTab extends StatefulWidget {
 }
 
 class _GeneralSettingsTabState extends State<GeneralSettingsTab> {
+  final GeneralSettingController generalSettingController =
+      Get.put(GeneralSettingController());
+
   final List<String> _optionLanguage = ['English', 'Thai'];
   final List<String> _timeZone = [
     '(UTC -12:00) International Date Line West',
@@ -101,89 +106,82 @@ class _GeneralSettingsTabState extends State<GeneralSettingsTab> {
     'Saturday'
   ];
 
-  String _selectedLanguage = '';
-  String _selectedTimeZone = '';
-  String _selectedDateFormat = '';
-  String _selectedTimeFormat = '';
-  String _selectedWeekStart = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedLanguage = _optionLanguage[0];
-    _selectedTimeZone = _timeZone[0];
-    _selectedDateFormat = _dateFormat[0];
-    _selectedTimeFormat = _timeFormat[0];
-    _selectedWeekStart = _weekStart[1]; // Default to Monday
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader(
-                'Themes', 'Choose your theme to suit your mood.'),
-            _buildThemeSelection(),
-            SizedBox(height: 10),
-            _buildSectionHeader('Language',
-                'Set language in which Clockify is displayed in all your workspaces.'),
-            _buildDropdown('Language', _selectedLanguage, _optionLanguage,
-                (String? newValue) {
-              setState(() {
-                _selectedLanguage = newValue!;
-              });
-            }),
-            _buildSectionHeader(
-                'Time settings', 'Configure your time settings.'),
-            _buildDropdown('Time zone', _selectedTimeZone, _timeZone,
-                (String? newValue) {
-              setState(() {
-                _selectedTimeZone = newValue!;
-              });
-            }),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDropdown(
-                      'Date format', _selectedDateFormat, _dateFormat,
-                      (String? newValue) {
-                    setState(() {
-                      _selectedDateFormat = newValue!;
-                    });
-                  }),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: _buildDropdown(
-                      'Time format', _selectedTimeFormat, _timeFormat,
-                      (String? newValue) {
-                    setState(() {
-                      _selectedTimeFormat = newValue!;
-                    });
-                  }),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDropdown(
-                      'Week start', _selectedWeekStart, _weekStart,
-                      (String? newValue) {
-                    setState(() {
-                      _selectedWeekStart = newValue!;
-                    });
-                  }),
-                ),
-                // Add 'Day start' dropdown or widget here if needed
-              ],
-            ),
-          ],
-        ),
+        child: Obx(() {
+          var settings = generalSettingController.generalsettings.value;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionHeader(
+                  'Themes', 'Choose your theme to suit your mood.'),
+              _buildThemeSelection(settings.isDarkTheme),
+              SizedBox(height: 10),
+              _buildSectionHeader('Language',
+                  'Set language in which Clockify is displayed in all your workspaces.'),
+              _buildDropdown(
+                  'Language',
+                  settings.language.isNotEmpty
+                      ? settings.language
+                      : _optionLanguage[0],
+                  _optionLanguage, (String? newValue) {
+                generalSettingController.updateLanguage(newValue!);
+              }),
+              _buildSectionHeader(
+                  'Time settings', 'Configure your time settings.'),
+              _buildDropdown(
+                  'Time zone',
+                  settings.timeZone.isNotEmpty
+                      ? settings.timeZone
+                      : _timeZone[0],
+                  _timeZone, (String? newValue) {
+                generalSettingController.updateTimeZone(newValue!);
+              }),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildDropdown(
+                        'Date format',
+                        settings.dateFormat.isNotEmpty
+                            ? settings.dateFormat
+                            : _dateFormat[0],
+                        _dateFormat, (String? newValue) {
+                      generalSettingController.updateDateFormat(newValue!);
+                    }),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: _buildDropdown(
+                        'Time format',
+                        settings.timeFormat.isNotEmpty
+                            ? settings.timeFormat
+                            : _timeFormat[0],
+                        _timeFormat, (String? newValue) {
+                      generalSettingController.updateTimeFormat(newValue!);
+                    }),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildDropdown(
+                        'Week start',
+                        settings.weekStart.isNotEmpty
+                            ? settings.weekStart
+                            : _weekStart[1],
+                        _weekStart, (String? newValue) {
+                      generalSettingController.updateWeekStart(newValue!);
+                    }),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -192,24 +190,34 @@ class _GeneralSettingsTabState extends State<GeneralSettingsTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: Theme.of(context).textTheme.bodyLarge),
-        Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+        Text(title, style: Theme.of(context).textTheme.headlineMedium),
+        Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
         SizedBox(height: 10),
       ],
     );
   }
 
-  Widget _buildThemeSelection() {
+  Widget _buildThemeSelection(bool isDarkTheme) {
     return Row(
       children: [
         Row(children: [
-          CircularCheckbox(),
+          CircularCheckbox(
+            value: !isDarkTheme,
+            onChanged: (bool newValue) {
+              generalSettingController.toggleTheme();
+            },
+          ),
           SizedBox(width: 5),
           Text('Light'),
         ]),
         SizedBox(width: 20),
         Row(children: [
-          CircularCheckbox(),
+          CircularCheckbox(
+            value: isDarkTheme,
+            onChanged: (bool newValue) {
+              generalSettingController.toggleTheme();
+            },
+          ),
           SizedBox(width: 5),
           Text('Dark'),
         ]),
@@ -233,7 +241,6 @@ class _GeneralSettingsTabState extends State<GeneralSettingsTab> {
             );
           }).toList(),
         ),
-        SizedBox(height: 10),
       ],
     );
   }

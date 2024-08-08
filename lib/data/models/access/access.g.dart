@@ -1,41 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'history.dart';
+part of 'access.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class HistoryAdapter extends TypeAdapter<History> {
+class AccessAdapter extends TypeAdapter<Access> {
   @override
-  final int typeId = 2;
+  final int typeId = 12;
 
   @override
-  History read(BinaryReader reader) {
+  Access read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return History(
+    return Access(
       id: fields[0] as String,
-      date: fields[1] as String,
-      detail: fields[2] as String,
-      timetracksKey: (fields[3] as List).cast<String>(),
+      userKey: fields[1] as String,
+      billrate: fields[2] as double,
+      role: fields[3] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, History obj) {
+  void write(BinaryWriter writer, Access obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.userKey)
       ..writeByte(2)
-      ..write(obj.detail)
+      ..write(obj.billrate)
       ..writeByte(3)
-      ..write(obj.timetracksKey);
+      ..write(obj.role);
   }
 
   @override
@@ -44,7 +44,7 @@ class HistoryAdapter extends TypeAdapter<History> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is HistoryAdapter &&
+      other is AccessAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

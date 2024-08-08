@@ -45,13 +45,13 @@ class _AccessTabState extends State<AccessTab> with ScrollableMixin<AccessTab> {
         SizedBox(height: 10),
         Row(children: [
           Row(children: [
-            CircularCheckbox(),
+            // CircularCheckbox(),
             SizedBox(width: 5),
             Text('Light'),
           ]),
           SizedBox(width: 20),
           Row(children: [
-            CircularCheckbox(),
+            // CircularCheckbox(),
             SizedBox(width: 5),
             Text('Dark'),
           ]),

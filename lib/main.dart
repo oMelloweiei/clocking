@@ -1,3 +1,4 @@
+import 'package:clockify_project/data/models/general_setting/general_setting.dart';
 import 'package:clockify_project/data/models/notifications/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:clockify_project/data/models/client/client.dart';
@@ -16,7 +17,7 @@ import 'package:clockify_project/screenconfig.dart';
 import 'package:clockify_project/texttheme.dart';
 
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart'; // Import the Hive setup
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,8 @@ Future<void> main() async {
   Hive.registerAdapter(ClientAdapter());
   Hive.registerAdapter(KioskAdapter());
   Hive.registerAdapter(NotificationListAdapter());
-  Hive.registerAdapter(UserNotificationAdapter());
+  Hive.registerAdapter(UserNotificationSettingAdapter());
+  Hive.registerAdapter(UserGeneralSettingAdapter());
 
   // Open boxes
   await Hive.openBox<User>('users');
@@ -42,7 +44,8 @@ Future<void> main() async {
   await Hive.openBox<Client>('clients');
   await Hive.openBox<Kiosk>('kiosks');
   await Hive.openBox<NotificationList>('notifications');
-  await Hive.openBox<UserNotification>('notificationSettings');
+  await Hive.openBox<UserNotificationSetting>('notificationSettings');
+  await Hive.openBox<UserGeneralSetting>('generalSettings');
 
   // Initialize sample data (optional)
   await initializeSampleData();

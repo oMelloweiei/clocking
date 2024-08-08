@@ -17,15 +17,12 @@ class TimetrackController extends GetxController {
   }
 
   void _loadTimetracks() {
-    print('Before load timetrack');
     timetracks.assignAll(_timetrackBox.values.toList());
   }
 
-  void addTimetrack(Timetrack timetrack, String today) {
-    final HistoryController historyController = Get.put(HistoryController());
-    final history = historyController.getHistoryToday(today)!;
-    history.timetracksKey.add(timetrack.id);
-    historyController.updateHistory(history);
+  void addTimetrack(Timetrack timetrack, History today) {
+    today.timetracksKey.add(timetrack.id);
+
     _timetrackBox.add(timetrack);
     timetracks.add(timetrack);
   }

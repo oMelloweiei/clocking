@@ -14,7 +14,6 @@ class User extends HiveObject {
     required this.historiesKey,
     required this.clientsKey,
     required this.kiosksKey,
-    required this.notificationSettingKey,
     required this.notificationsKey,
   });
 
@@ -46,9 +45,6 @@ class User extends HiveObject {
   List<String> kiosksKey;
 
   @HiveField(9)
-  List<String> notificationSettingKey;
-
-  @HiveField(10)
   List<String> notificationsKey;
 
   // Factory constructor to create a User from JSON
@@ -63,8 +59,6 @@ class User extends HiveObject {
       historiesKey: List<String>.from(json['historiesKey'] as List),
       clientsKey: List<String>.from(json['clientsKey'] as List),
       kiosksKey: List<String>.from(json['kiosksKey'] as List),
-      notificationSettingKey:
-          List<String>.from(json['notificationSettingKey'] as List),
       notificationsKey: List<String>.from(json['notificationsKey'] as List),
     );
   }
@@ -81,7 +75,6 @@ class User extends HiveObject {
       'historiesKey': historiesKey,
       'clientsKey': clientsKey,
       'kiosksKey': kiosksKey,
-      'notificationSettingKey': notificationSettingKey,
       'notificationsKey': notificationsKey,
     };
   }
@@ -96,7 +89,6 @@ class User extends HiveObject {
     required List<String>? historiesKey,
     required List<String>? clientsKey,
     required List<String>? kiosksKey,
-    required List<String>? notificationSettingKey,
     required List<String>? notificationsKey,
   }) {
     return User(
@@ -109,7 +101,6 @@ class User extends HiveObject {
       historiesKey: historiesKey ?? <String>[],
       clientsKey: clientsKey ?? <String>[],
       kiosksKey: kiosksKey ?? <String>[],
-      notificationSettingKey: notificationSettingKey ?? <String>[],
       notificationsKey: notificationsKey ?? <String>[],
     );
   }

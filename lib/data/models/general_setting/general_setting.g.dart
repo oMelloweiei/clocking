@@ -1,41 +1,50 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'history.dart';
+part of 'general_setting.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class HistoryAdapter extends TypeAdapter<History> {
+class UserGeneralSettingAdapter extends TypeAdapter<UserGeneralSetting> {
   @override
-  final int typeId = 2;
+  final int typeId = 9;
 
   @override
-  History read(BinaryReader reader) {
+  UserGeneralSetting read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return History(
+    return UserGeneralSetting(
       id: fields[0] as String,
-      date: fields[1] as String,
-      detail: fields[2] as String,
-      timetracksKey: (fields[3] as List).cast<String>(),
+      isDarkTheme: fields[1] as bool,
+      language: fields[2] as String,
+      timeZone: fields[3] as String,
+      dateFormat: fields[4] as String,
+      weekStart: fields[5] as String,
+      timeFormat: fields[6] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, History obj) {
+  void write(BinaryWriter writer, UserGeneralSetting obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.isDarkTheme)
       ..writeByte(2)
-      ..write(obj.detail)
+      ..write(obj.language)
       ..writeByte(3)
-      ..write(obj.timetracksKey);
+      ..write(obj.timeZone)
+      ..writeByte(4)
+      ..write(obj.dateFormat)
+      ..writeByte(5)
+      ..write(obj.weekStart)
+      ..writeByte(6)
+      ..write(obj.timeFormat);
   }
 
   @override
@@ -44,7 +53,7 @@ class HistoryAdapter extends TypeAdapter<History> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is HistoryAdapter &&
+      other is UserGeneralSettingAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

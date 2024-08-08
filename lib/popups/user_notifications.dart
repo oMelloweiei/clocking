@@ -93,15 +93,26 @@ class UserNotificationsList extends StatelessWidget {
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
                   final notification = notifications[index];
+
                   return ListTile(
-                    title: Text(notification.title),
-                    subtitle: Text(notification.message),
+                    title: Text(
+                      notification.title,
+                      style: TextStyle(
+                          color:
+                              notification.isRead ? Colors.grey : Colors.black),
+                    ),
+                    subtitle: Text(
+                      notification.message,
+                      style: TextStyle(
+                          color:
+                              notification.isRead ? Colors.grey : Colors.black),
+                    ),
+                    trailing: notification.isRead ? Text('Readed') : Text(''),
                     onTap: () {
                       notiController.updateNotiList(notification);
                     },
                   );
-                },
-              )
+                })
             : const Center(child: Text('No notifications')),
       );
     });

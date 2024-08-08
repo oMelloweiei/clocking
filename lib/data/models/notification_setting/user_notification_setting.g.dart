@@ -6,17 +6,18 @@ part of 'user_notification_setting.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserNotificationAdapter extends TypeAdapter<UserNotification> {
+class UserNotificationSettingAdapter
+    extends TypeAdapter<UserNotificationSetting> {
   @override
   final int typeId = 7;
 
   @override
-  UserNotification read(BinaryReader reader) {
+  UserNotificationSetting read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserNotification(
+    return UserNotificationSetting(
       id: fields[0] as String,
       newsletter: fields[1] as bool,
       onboarding: fields[2] as bool,
@@ -29,7 +30,7 @@ class UserNotificationAdapter extends TypeAdapter<UserNotification> {
   }
 
   @override
-  void write(BinaryWriter writer, UserNotification obj) {
+  void write(BinaryWriter writer, UserNotificationSetting obj) {
     writer
       ..writeByte(8)
       ..writeByte(0)
@@ -56,7 +57,7 @@ class UserNotificationAdapter extends TypeAdapter<UserNotification> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserNotificationAdapter &&
+      other is UserNotificationSettingAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

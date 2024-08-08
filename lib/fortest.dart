@@ -1,5 +1,6 @@
 import 'package:clockify_project/data/models/client/client.dart';
 import 'package:clockify_project/data/models/entry/entry.dart';
+import 'package:clockify_project/data/models/general_setting/general_setting.dart';
 import 'package:clockify_project/data/models/history/history.dart';
 import 'package:clockify_project/data/models/notification_setting/user_notification_setting.dart';
 import 'package:clockify_project/data/models/notifications/notifications.dart';
@@ -101,9 +102,10 @@ Future<void> initializeSampleData() async {
   var kioskBox = Hive.box<Kiosk>('kiosks');
   var notificationBox = Hive.box<NotificationList>('notifications');
   var notificationSettingBox =
-      Hive.box<UserNotification>('notificationSettings');
+      Hive.box<UserNotificationSetting>('notificationSettings');
   var historyBox = Hive.box<History>('histories');
   var timetrackBox = Hive.box<Timetrack>('timetracks');
+  var generalSettingBox = Hive.box<UserGeneralSetting>('generalSettings');
 
   // Check if the data is already initialized
   if (userBox.isNotEmpty) {
@@ -163,10 +165,32 @@ Future<void> initializeSampleData() async {
       historiesKey: userData['historiesKey'] as List<String>?,
       clientsKey: userData['clientsKey'] as List<String>?,
       kiosksKey: userData['kiosksKey'] as List<String>?,
-      notificationSettingKey:
-          userData['notificationSettingKey'] as List<String>?,
       notificationsKey: userData['notificationsKey'] as List<String>?,
     );
+
+    final notisetting = UserNotificationSetting.create(
+        id: user.id,
+        newsletter: false,
+        onboarding: false,
+        weeklyReport: false,
+        longRunningTimer: false,
+        alerts: false,
+        reminder: false,
+        schedule: false);
+
+    notificationSettingBox.put(notisetting.id, notisetting);
+
+    final generalsetting = UserGeneralSetting.create(
+      id: user.id,
+      isDarkTheme: false,
+      language: "",
+      timeZone: "",
+      dateFormat: "",
+      weekStart: "",
+      timeFormat: "",
+    );
+
+    generalSettingBox.put(generalsetting.id, generalsetting);
 
     // Check if user is Ambartukam and update their keys
     if (user.name == 'Ambartukam') {
@@ -213,7 +237,7 @@ Future<void> initializeSampleData() async {
       timetrackBox.put(timeTrack2.id, timeTrack2);
 
       var history = History.create(
-        date: 'For Test',
+        date: 'For Test(Init)',
         timetracksKey: [timeTrack1.id, timeTrack2.id],
       );
 

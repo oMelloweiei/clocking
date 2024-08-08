@@ -26,15 +26,14 @@ class UserAdapter extends TypeAdapter<User> {
       historiesKey: (fields[6] as List).cast<String>(),
       clientsKey: (fields[7] as List).cast<String>(),
       kiosksKey: (fields[8] as List).cast<String>(),
-      notificationSettingKey: (fields[9] as List).cast<String>(),
-      notificationsKey: (fields[10] as List).cast<String>(),
+      notificationsKey: (fields[9] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -54,8 +53,6 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(8)
       ..write(obj.kiosksKey)
       ..writeByte(9)
-      ..write(obj.notificationSettingKey)
-      ..writeByte(10)
       ..write(obj.notificationsKey);
   }
 

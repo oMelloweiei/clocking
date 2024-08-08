@@ -1,4 +1,5 @@
 import 'package:clockify_project/data/controller/tagController.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +26,7 @@ class _TagPopUpState extends State<TagPopUp> {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       offset: Offset(240, 45),
-      icon: Icon(Icons.tag_outlined),
+      icon: Icon(CupertinoIcons.tags),
       itemBuilder: (BuildContext bc) {
         final tags = tagController.tags;
         List<PopupMenuEntry<String>> menuItems = [

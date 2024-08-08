@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
 
 class CircularCheckbox extends StatefulWidget {
-  const CircularCheckbox({Key? key}) : super(key: key);
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const CircularCheckbox({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
   _CircularCheckboxState createState() => _CircularCheckboxState();
 }
 
 class _CircularCheckboxState extends State<CircularCheckbox> {
-  bool isChecked = false;
+  late bool isChecked;
+
+  @override
+  void initState() {
+    super.initState();
+    isChecked = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(CircularCheckbox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      isChecked = widget.value;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +38,7 @@ class _CircularCheckboxState extends State<CircularCheckbox> {
         setState(() {
           isChecked = !isChecked;
         });
+        widget.onChanged(isChecked);
       },
       child: Container(
         width: 24.0,

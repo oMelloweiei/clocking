@@ -1,41 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'history.dart';
+part of 'project_property.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class HistoryAdapter extends TypeAdapter<History> {
+class ProjectPropertyAdapter extends TypeAdapter<ProjectProperty> {
   @override
-  final int typeId = 2;
+  final int typeId = 10;
 
   @override
-  History read(BinaryReader reader) {
+  ProjectProperty read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return History(
+    return ProjectProperty(
       id: fields[0] as String,
-      date: fields[1] as String,
-      detail: fields[2] as String,
-      timetracksKey: (fields[3] as List).cast<String>(),
+      accessKeys: (fields[2] as List).cast<String>(),
+      taskKeys: (fields[1] as List).cast<String>(),
+      noteKeys: (fields[3] as List).cast<String>(),
+      onVisible: fields[4] as bool,
+      projectsettingKey: fields[5] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, History obj) {
+  void write(BinaryWriter writer, ProjectProperty obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.taskKeys)
       ..writeByte(2)
-      ..write(obj.detail)
+      ..write(obj.accessKeys)
       ..writeByte(3)
-      ..write(obj.timetracksKey);
+      ..write(obj.noteKeys)
+      ..writeByte(4)
+      ..write(obj.onVisible)
+      ..writeByte(5)
+      ..write(obj.projectsettingKey);
   }
 
   @override
@@ -44,7 +50,7 @@ class HistoryAdapter extends TypeAdapter<History> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is HistoryAdapter &&
+      other is ProjectPropertyAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

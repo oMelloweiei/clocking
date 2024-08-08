@@ -1,11 +1,10 @@
 import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 
 part 'user_notification_setting.g.dart';
 
 @HiveType(typeId: 7)
-class UserNotification extends HiveObject {
-  UserNotification({
+class UserNotificationSetting extends HiveObject {
+  UserNotificationSetting({
     required this.id,
     required this.newsletter,
     required this.onboarding,
@@ -40,9 +39,9 @@ class UserNotification extends HiveObject {
   @HiveField(7)
   bool schedule;
 
-  // Factory constructor to create a UserNotification from JSON
-  factory UserNotification.fromJson(Map<String, dynamic> json) {
-    return UserNotification(
+  // Factory constructor to create a UserNotificationSetting from JSON
+  factory UserNotificationSetting.fromJson(Map<String, dynamic> json) {
+    return UserNotificationSetting(
       id: json['id'] as String,
       newsletter: json['newsletter'] as bool,
       onboarding: json['onboarding'] as bool,
@@ -54,7 +53,7 @@ class UserNotification extends HiveObject {
     );
   }
 
-  // Method to convert UserNotification to JSON
+  // Method to convert UserNotificationSetting to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -68,25 +67,26 @@ class UserNotification extends HiveObject {
     };
   }
 
-  // Factory constructor to create a new UserNotification with default values
-  factory UserNotification.create({
-    required bool newsletter,
-    required bool onboarding,
-    required bool weeklyReport,
-    required bool longRunningTimer,
-    required bool alerts,
-    required bool reminder,
-    required bool schedule,
+  // Factory constructor to create a new UserNotificationSetting with default values
+  factory UserNotificationSetting.create({
+    required String id,
+    required bool? newsletter,
+    required bool? onboarding,
+    required bool? weeklyReport,
+    required bool? longRunningTimer,
+    required bool? alerts,
+    required bool? reminder,
+    required bool? schedule,
   }) {
-    return UserNotification(
-      id: const Uuid().v1(),
-      newsletter: newsletter,
-      onboarding: onboarding,
-      weeklyReport: weeklyReport,
-      longRunningTimer: longRunningTimer,
-      alerts: alerts,
-      reminder: reminder,
-      schedule: schedule,
+    return UserNotificationSetting(
+      id: id,
+      newsletter: newsletter ?? false,
+      onboarding: onboarding ?? false,
+      weeklyReport: weeklyReport ?? false,
+      longRunningTimer: longRunningTimer ?? false,
+      alerts: alerts ?? false,
+      reminder: reminder ?? false,
+      schedule: schedule ?? false,
     );
   }
 }

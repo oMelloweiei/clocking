@@ -12,7 +12,7 @@ class History extends HiveObject {
   final String date;
 
   @HiveField(2)
-  final String? detail;
+  final String detail;
 
   @HiveField(3)
   List<String> timetracksKey;
@@ -20,7 +20,7 @@ class History extends HiveObject {
   History({
     required this.id,
     required this.date,
-    this.detail,
+    required this.detail,
     required this.timetracksKey,
   });
 
@@ -29,7 +29,7 @@ class History extends HiveObject {
     return History(
       id: json['id'] as String,
       date: json['date'] as String,
-      detail: json['detail'] as String?,
+      detail: json['detail'] as String,
       timetracksKey: List<String>.from(json['timetracksKey'] as List),
     );
   }
@@ -47,12 +47,13 @@ class History extends HiveObject {
   // Factory constructor to create a new History with default values
   factory History.create({
     required String date,
+    String? detail,
     List<String>? timetracksKey,
   }) {
     return History(
       id: const Uuid().v1(),
       date: date,
-      detail: null,
+      detail: detail ?? '',
       timetracksKey: timetracksKey ?? [],
     );
   }

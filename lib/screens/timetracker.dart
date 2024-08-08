@@ -1,21 +1,22 @@
 import 'package:clockify_project/color.dart';
+import 'package:clockify_project/component/headtablebox.dart';
+import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/data/controller/historyController.dart';
 import 'package:clockify_project/data/controller/timetrackController.dart';
-import 'package:clockify_project/data/controller/userController.dart';
 import 'package:clockify_project/data/models/history/history.dart';
 import 'package:clockify_project/data/models/timetrack/timetrack.dart';
 import 'package:clockify_project/popups/projectselect.dart';
 import 'package:clockify_project/popups/tagselect.dart';
 import 'package:clockify_project/screenconfig.dart';
 import 'package:clockify_project/timer.dart';
+import 'package:clockify_project/validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class TimeTrackerScreen extends StatefulWidget {
-  const TimeTrackerScreen({
-    Key? key,
-  }) : super(key: key);
+  const TimeTrackerScreen({Key? key}) : super(key: key);
 
   @override
   State<TimeTrackerScreen> createState() => _TimeTrackerScreenState();
@@ -31,6 +32,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
   TextEditingController timeStart = TextEditingController(text: '00:00');
   TextEditingController timeEnd = TextEditingController(text: '00:00');
   TextEditingController detailController = TextEditingController();
+  TextEditingController descController = TextEditingController();
   bool activeborder = false;
   late DateTime now;
   late String today;
@@ -38,27 +40,27 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
   final TimetrackController timetrackController =
       Get.put(TimetrackController());
   late List<History> histories;
-  late var today_history;
+  late History? todayHistory;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     now = DateTime.now();
     today = DateFormat.yMMMMEEEEd().format(now);
-    getHistory();
+    _getHistory();
   }
 
-  void getHistory() {
+  void _getHistory() {
     histories = historyController.histories;
-    today_history = historyController.getHistoryToday(today);
-    print(today_history);
-    if (today_history == null) {
-      today_history = History.create(date: today);
-      historyController.createTodayHistory(today_history);
+    todayHistory = historyController.getHistoryToday(today);
+    if (todayHistory == null) {
+      todayHistory = History.create(date: today);
+      historyController.createTodayHistory(todayHistory!);
     }
-
-    print(today_history);
   }
+
+  String _twoDigits(int n) => n.toString().padLeft(2, '0');
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,9 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     isPortrait = screenConfig.isPortrait;
     screenwidth = MediaQuery.of(context).size.width;
     screenheight = MediaQuery.of(context).size.height;
-    return Padding(
+
+    return SingleChildScrollView(
+        child: Padding(
       padding: EdgeInsets.symmetric(
         vertical: !isMobile
             ? screenheight * 0.06
@@ -81,20 +85,18 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: [
-          isMobile && isPortrait ? _mobilebox() : _box(),
-          SizedBox(height: 30),
+          isMobile && isPortrait ? _buildMobileBox() : _buildBox(),
+          SizedBox(height: 20),
+          Text('Today is $today'),
+          Text('Now : $now'),
+          SizedBox(height: 20),
           _buildHistories(),
-          Text(today.toString()),
-          Text(now.toString())
         ],
       ),
-    );
+    ));
   }
 
-  Widget _buildButton() {
-    final isRunning = timerUtils.isRunning;
-    final isCompleted = timerUtils.duration.inSeconds == 0;
-
+  Widget _buildButton(bool isRunning) {
     return SizedBox(
       width: isMobile && isPortrait ? double.maxFinite : null,
       height: isMobile && isPortrait ? 50 : 40,
@@ -109,6 +111,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
         ),
         onPressed: () async {
           if (isRunning) {
+            final History history = todayHistory!;
             final newTimetrack = Timetrack.create(
               tagKey: '',
               projectKey: '',
@@ -116,7 +119,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
               timeStart: timeStart.text,
               timeEnd: timeEnd.text,
             );
-            timetrackController.addTimetrack(newTimetrack, today);
+            timetrackController.addTimetrack(newTimetrack, history);
             setState(() {
               timerUtils.stopTimer(resets: false);
               timerUtils.reset();
@@ -139,7 +142,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     );
   }
 
-  Widget _buildButton2() {
+  Widget _buildAddButton() {
     return SizedBox(
       width: isMobile && isPortrait ? double.maxFinite : null,
       height: isMobile && isPortrait ? 50 : 40,
@@ -153,18 +156,25 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
           backgroundColor: btncolor,
         ),
         onPressed: () {
-          final newTimetrack = Timetrack.create(
-            tagKey: '',
-            projectKey: '',
-            time: '',
-            timeStart: timeStart.text,
-            timeEnd: timeEnd.text,
-          );
-          timetrackController.addTimetrack(newTimetrack, today);
-          setState(() {
-            timeEnd.text = "00:00";
-            timeStart.text = "00:00";
-          });
+          final History history = todayHistory!;
+          if (_formKey.currentState?.validate() ?? false) {
+            if (timeStart.text == timeEnd.text ||
+                (timeStart.text == "00:00" && timeEnd.text == "00:00")) {
+              return;
+            }
+            final newTimetrack = Timetrack.create(
+              tagKey: '',
+              projectKey: '',
+              time: timerUtils.formattedTime,
+              timeStart: timeStart.text,
+              timeEnd: timeEnd.text,
+            );
+            timetrackController.addTimetrack(newTimetrack, history);
+            setState(() {
+              timeEnd.text = "00:00";
+              timeStart.text = "00:00";
+            });
+          }
         },
         child: Text(
           'Add',
@@ -174,12 +184,47 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     );
   }
 
-  Widget _box() {
-    // 9 --> 09 or 11 --> 11
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(timerUtils.duration.inMinutes.remainder(60));
-    final seconds = twoDigits(timerUtils.duration.inSeconds.remainder(60));
-    final hours = twoDigits(timerUtils.duration.inHours.remainder(60));
+  Widget _buildAddTimeForm() {
+    return Visibility(
+      visible: onShow,
+      child: Form(
+          key: _formKey,
+          child: Row(
+            children: [
+              IntrinsicWidth(
+                child: TextFormField(
+                  validator: (value) => Validator.validateTime('Time', value),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(border: InputBorder.none),
+                  controller: timeStart,
+                ),
+              ),
+              SizedBox(width: 10),
+              Text('-'),
+              SizedBox(width: 10),
+              IntrinsicWidth(
+                child: TextFormField(
+                  validator: (value) => Validator.validateTime('Time', value),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(border: InputBorder.none),
+                  controller: timeEnd,
+                ),
+              ),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.edit_calendar_outlined),
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buildBox() {
+    final minutes = _twoDigits(timerUtils.duration.inMinutes.remainder(60));
+    final seconds = _twoDigits(timerUtils.duration.inSeconds.remainder(60));
+    final hours = _twoDigits(timerUtils.duration.inHours.remainder(60));
+    final isRunning = timerUtils.isRunning;
 
     return Container(
       width: double.infinity,
@@ -199,7 +244,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
               child: Focus(
                 onFocusChange: (hasFocus) {
                   setState(() {
-                    activeborder = hasFocus ? true : false;
+                    activeborder = hasFocus;
                   });
                 },
                 child: TextFormField(
@@ -221,42 +266,16 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
             SizedBox(width: 20),
             TagPopUp(),
             SizedBox(width: 20),
-            Visibility(
-              visible: onShow,
-              child: Row(
-                children: [
-                  IntrinsicWidth(
-                    child: TextFormField(
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(border: InputBorder.none),
-                      controller: timeStart,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Text('-'),
-                  SizedBox(width: 10),
-                  IntrinsicWidth(
-                    child: TextFormField(
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(border: InputBorder.none),
-                      controller: timeEnd,
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.edit_calendar_outlined),
-                  ),
-                ],
-              ),
-            ),
+            _buildAddTimeForm(),
             SizedBox(width: 20),
             Text(
               '$hours:$minutes:$seconds',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(width: 20),
-            onShow ? _buildButton2() : _buildButton(),
+            onShow
+                ? _buildAddButton()
+                : _buildButton(isRunning), // this button will be one of form
             SizedBox(width: 20),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -287,11 +306,12 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     );
   }
 
-  Widget _mobilebox() {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(timerUtils.duration.inMinutes.remainder(60));
-    final seconds = twoDigits(timerUtils.duration.inSeconds.remainder(60));
-    final hours = twoDigits(timerUtils.duration.inHours.remainder(60));
+  Widget _buildMobileBox() {
+    final minutes = _twoDigits(timerUtils.duration.inMinutes.remainder(60));
+    final seconds = _twoDigits(timerUtils.duration.inSeconds.remainder(60));
+    final hours = _twoDigits(timerUtils.duration.inHours.remainder(60));
+    final isRunning = timerUtils.isRunning;
+
     return Container(
       padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
       width: double.infinity,
@@ -329,54 +349,130 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
             '$hours:$minutes:$seconds',
             style: TextStyle(fontSize: 16),
           ),
-          Row(children: [
-            Expanded(child: _buildButton()),
-            SizedBox(width: 10),
-            Column(
-              children: [
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.timer_10_outlined)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
-              ],
-            ),
-          ]),
+          Row(
+            children: [
+              Expanded(child: _buildButton(isRunning)),
+              SizedBox(width: 10),
+              Column(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.timer_10_outlined),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.menu),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
   Widget _buildHistories() {
-    return Expanded(
-      child: Obx(() {
-        final histories = historyController.histories;
-        final timetracks = timetrackController.timetracks;
-        return ListView.builder(
-          itemCount: histories.length,
-          itemBuilder: (context, index) {
-            final history = histories[index];
-            print('check error before map');
-            print('${history.date} , ${history.timetracksKey}');
-            if (history.timetracksKey.isEmpty && history.date == today) {
-              return SizedBox();
-            } else {
-              return ListTile(
-                title: Text(history.date),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: history.timetracksKey.map((timetrackKey) {
-                    final timetrack = timetracks
-                        .firstWhere((track) => track.id == timetrackKey);
+    return Obx(() {
+      final histories = historyController.histories;
+      final timetracks = timetrackController.timetracks;
 
-                    return Text(
-                      '${timetrack.projectKey} - ${timetrack.tagKey}: ${timetrack.timeStart} - ${timetrack.timeEnd} , ${timetrack.time}',
-                    );
-                  }).toList(),
+      final historyWidgets = histories.map<Widget>((history) {
+        if (history.timetracksKey.isEmpty && history.date == today) {
+          return const SizedBox();
+        } else {
+          return Column(
+            children: [
+              TopBox(
+                child: Text(history.date),
+              ),
+              _buildTimetrack(history, timetracks)
+            ],
+          );
+        }
+      }).toList();
+
+      final spacedHistoryWidgets = historyWidgets.expand((widget) {
+        return [
+          widget,
+          const SizedBox(height: 20),
+        ];
+      }).toList();
+
+      if (spacedHistoryWidgets.isNotEmpty) {
+        spacedHistoryWidgets.removeLast();
+      }
+
+      return Column(children: spacedHistoryWidgets);
+    });
+  }
+
+  Widget _buildTimetrack(History history, List<Timetrack> timetracks) {
+    final trackWidgets = timetracks.map<Widget>((timetrack) {
+      if (history.timetracksKey.contains(timetrack.id)) {
+        return Infoboxcolumn(
+          index: timetracks.indexOf(timetrack),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    setState(() {
+                      activeborder = hasFocus;
+                    });
+                  },
+                  child: TextFormField(
+                    controller: descController,
+                    decoration: InputDecoration(
+                      hintText: 'Add Description',
+                      border: activeborder
+                          ? OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.grey[200]!, width: 0.0),
+                            )
+                          : InputBorder.none,
+                    ),
+                  ),
                 ),
-              );
-            }
-          },
+              ),
+              SizedBox(width: 20),
+              ProjectPopup(),
+              SizedBox(width: 20),
+              TagPopUp(),
+              SizedBox(width: 20),
+              Text(timetrack.timeStart),
+              SizedBox(width: 10),
+              Text('-'),
+              SizedBox(width: 10),
+              Text(timetrack.timeEnd),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.calendar_month_outlined),
+              ),
+              SizedBox(width: 20),
+              Text(timetrack.time),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(CupertinoIcons.arrowtriangle_right_fill),
+              ),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(CupertinoIcons.ellipsis_vertical),
+              ),
+            ],
+          ),
         );
-      }),
+      } else {
+        return const SizedBox();
+      }
+    }).toList();
+
+    return Column(
+      children: trackWidgets,
     );
   }
 }

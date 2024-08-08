@@ -18,7 +18,7 @@ class _ProjectPopupState extends State<ProjectPopup> {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       offset: Offset(240, 45),
-      icon: Icon(Icons.paragliding_outlined),
+      icon: Icon(Icons.text_snippet_outlined),
       itemBuilder: (BuildContext context) {
         final projects = projectController.projects;
         List<PopupMenuEntry<String>> menuItems = [
