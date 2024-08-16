@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:clockify_project/data/controller/notiListController.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 
 class UserNotificationsList extends StatelessWidget {
   UserNotificationsList({Key? key}) : super(key: key);

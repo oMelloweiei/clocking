@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 import 'package:clockify_project/data/mockup.dart';
 
 class ProfileCard extends StatelessWidget {

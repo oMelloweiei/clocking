@@ -1,4 +1,4 @@
-import 'package:clockify_project/data/controller/notiSettingController.dart';
+import 'package:clockify_project/data/controller/user/notiSettingController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

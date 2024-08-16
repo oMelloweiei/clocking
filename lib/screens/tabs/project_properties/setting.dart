@@ -1,5 +1,7 @@
 import 'package:clockify_project/component/color_dropdown.dart';
+import 'package:clockify_project/data/controller/project/projectsettingController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingTab extends StatefulWidget {
   const SettingTab({super.key});
@@ -10,7 +12,9 @@ class SettingTab extends StatefulWidget {
 
 class _SettingTabState extends State<SettingTab> {
   final TextEditingController _controller = TextEditingController();
-  final TextEditingController _billablecontroller = TextEditingController();
+  final ProjectSettingController _projectSettingController =
+      Get.put(ProjectSettingController());
+
   bool active = true;
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:clockify_project/data/controller/projectController.dart';
+import 'package:clockify_project/data/controller/project/projectController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

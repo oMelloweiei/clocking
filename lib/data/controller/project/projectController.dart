@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:clockify_project/data/models/project/project.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 
 class ProjectController extends GetxController {
   late final Box<Project> _projectBox;

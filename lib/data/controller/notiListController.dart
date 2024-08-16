@@ -1,7 +1,7 @@
 import 'package:clockify_project/data/models/notifications/notifications.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 
 class NotiListController extends GetxController {
   late final Box<NotificationList> _notiListBox;

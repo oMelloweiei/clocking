@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:clockify_project/popups/profilecard.dart';
 import 'package:clockify_project/color.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isPortrait;

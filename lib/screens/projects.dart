@@ -2,9 +2,11 @@ import 'package:clockify_project/component/color_dropdown.dart';
 import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/component/tablebox.dart';
 import 'package:clockify_project/component/headtablebox.dart';
-import 'package:clockify_project/data/controller/projectController.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/project/projectController.dart';
+import 'package:clockify_project/data/controller/project/projectsettingController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 import 'package:clockify_project/data/models/project/project.dart';
+import 'package:clockify_project/data/models/project_setting/project_setting.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:clockify_project/screenconfig.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,8 @@ class _ProjectsScreenState extends State<ProjectsScreen>
   final TextEditingController addProjectController = TextEditingController();
   final ProjectController projectController = Get.put(ProjectController());
   final UserController userController = Get.put(UserController());
+  final ProjectSettingController projectsetting =
+      Get.put(ProjectSettingController());
 
   @override
   void initState() {
@@ -143,6 +147,17 @@ class _ProjectsScreenState extends State<ProjectsScreen>
                 );
 
                 projectController.saveProjectRecord(newProject);
+
+                final newprojectsetting = ProjectSetting.create(
+                    id: newProject.id,
+                    clientKey: newProject.clientKey,
+                    color: Colors.blue,
+                    onBillable: false,
+                    billablerate: 0.0,
+                    estimate: '');
+
+                projectsetting.createSetting(newprojectsetting);
+
                 addProjectController.clear();
                 Navigator.of(context).pop();
               }

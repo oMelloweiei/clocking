@@ -1,5 +1,5 @@
 import 'package:clockify_project/data/controller/loginController.dart';
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 import 'package:clockify_project/data/models/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

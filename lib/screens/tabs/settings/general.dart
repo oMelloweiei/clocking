@@ -1,5 +1,5 @@
 import 'package:clockify_project/component/circular_checkbox.dart';
-import 'package:clockify_project/data/controller/generalSettingController.dart';
+import 'package:clockify_project/data/controller/user/generalSettingController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

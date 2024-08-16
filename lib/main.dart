@@ -1,5 +1,10 @@
+import 'package:clockify_project/data/models/access/access.dart';
 import 'package:clockify_project/data/models/general_setting/general_setting.dart';
+import 'package:clockify_project/data/models/note/note.dart';
 import 'package:clockify_project/data/models/notifications/notifications.dart';
+import 'package:clockify_project/data/models/project_property/project_property.dart';
+import 'package:clockify_project/data/models/project_setting/project_setting.dart';
+import 'package:clockify_project/data/models/task/task.dart';
 import 'package:flutter/material.dart';
 import 'package:clockify_project/data/models/client/client.dart';
 import 'package:clockify_project/data/models/history/history.dart';
@@ -34,6 +39,11 @@ Future<void> main() async {
   Hive.registerAdapter(NotificationListAdapter());
   Hive.registerAdapter(UserNotificationSettingAdapter());
   Hive.registerAdapter(UserGeneralSettingAdapter());
+  Hive.registerAdapter(ProjectPropertyAdapter());
+  Hive.registerAdapter(ProjectSettingAdapter());
+  Hive.registerAdapter(AccessAdapter());
+  Hive.registerAdapter(NoteAdapter());
+  Hive.registerAdapter(TaskAdapter());
 
   // Open boxes
   await Hive.openBox<User>('users');
@@ -46,6 +56,11 @@ Future<void> main() async {
   await Hive.openBox<NotificationList>('notifications');
   await Hive.openBox<UserNotificationSetting>('notificationSettings');
   await Hive.openBox<UserGeneralSetting>('generalSettings');
+  await Hive.openBox<ProjectProperty>('projectproperty');
+  await Hive.openBox<ProjectSetting>('projectsetting');
+  await Hive.openBox<Access>('access');
+  await Hive.openBox<Task>('tasks');
+  await Hive.openBox<Note>('notes');
 
   // Initialize sample data (optional)
   await initializeSampleData();
@@ -69,8 +84,8 @@ class MainApp extends StatelessWidget {
             theme: ThemeData(
               textTheme: AppTextTheme.lightTextTheme,
             ),
-            initialRoute: '/',
-            onGenerateRoute: AppRoutes.generateRoute,
+            initialRoute: AppRoutes.initialRoute,
+            getPages: AppRoutes.routes,
           ),
         );
       },

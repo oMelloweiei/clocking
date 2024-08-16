@@ -1,4 +1,4 @@
-import 'package:clockify_project/data/controller/userController.dart';
+import 'package:clockify_project/data/controller/user/userController.dart';
 import 'package:clockify_project/data/models/client/client.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
