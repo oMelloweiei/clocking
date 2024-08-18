@@ -3,6 +3,7 @@ import 'package:clockify_project/data/controller/user/userController.dart';
 import 'package:clockify_project/data/models/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class UserSelection extends StatefulWidget {
   UserSelection({super.key});
@@ -75,6 +76,6 @@ class _UserSelectionState extends State<UserSelection> {
 
   void _loginUser(User user) {
     userController.loginUser(user);
-    Get.offAndToNamed('/home');
+    context.go('/timetracker');
   }
 }

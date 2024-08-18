@@ -10,9 +10,11 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Selected Widget: $selectedWidget');
+    print('Content: $content');
     return Container(
       color: subcolor,
-      width: 264,
+      width: 265,
       child: ListView(
         children: [
           _buildSectionHeader('TRACKER'),
@@ -41,30 +43,30 @@ class Sidebar extends StatelessWidget {
   List<Widget> _buildSidebarItems(String type) {
     return content
         .where((item) => item['type'] == type)
-        .map((item) => _buildSidebarItem(
-            item['topic'] as String, item['icon'] as IconData))
+        .map((item) => _buildSidebarItem(item['topic'] as String,
+            item['icon'] as IconData, item['route'] as String))
         .toList();
   }
 
-  Widget _buildSidebarItem(String topic, IconData icon) {
+  Widget _buildSidebarItem(String topic, IconData icon, String route) {
     return InkWell(
       onTap: () {
-        if (selectedWidget == topic) return;
-        onWidgetSelected(topic);
+        if (selectedWidget == route) return;
+        onWidgetSelected(route);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-        color: selectedWidget == topic ? maincolor : Colors.transparent,
+        color: selectedWidget == route ? maincolor : Colors.transparent,
         child: Row(
           children: [
             Icon(icon,
-                color: selectedWidget == topic ? Colors.white : maincolor),
+                color: selectedWidget == route ? Colors.white : maincolor),
             const SizedBox(width: 8),
             Text(
               topic,
               style: TextStyle(
                 fontSize: 18,
-                color: selectedWidget == topic ? Colors.white : maincolor,
+                color: selectedWidget == route ? Colors.white : maincolor,
               ),
             ),
           ],

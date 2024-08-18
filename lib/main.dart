@@ -5,6 +5,7 @@ import 'package:clockify_project/data/models/notifications/notifications.dart';
 import 'package:clockify_project/data/models/project_property/project_property.dart';
 import 'package:clockify_project/data/models/project_setting/project_setting.dart';
 import 'package:clockify_project/data/models/task/task.dart';
+
 import 'package:flutter/material.dart';
 import 'package:clockify_project/data/models/client/client.dart';
 import 'package:clockify_project/data/models/history/history.dart';
@@ -77,15 +78,15 @@ class MainApp extends StatelessWidget {
       builder: (context, orientation) {
         final isPortrait = orientation == Orientation.portrait;
         final isMobile = MediaQuery.of(context).size.shortestSide < 600;
+
         return ScreenConfig(
           isMobile: isMobile,
           isPortrait: isPortrait,
-          child: GetMaterialApp(
+          child: MaterialApp.router(
+            routerConfig: router,
             theme: ThemeData(
               textTheme: AppTextTheme.lightTextTheme,
             ),
-            initialRoute: AppRoutes.initialRoute,
-            getPages: AppRoutes.routes,
           ),
         );
       },

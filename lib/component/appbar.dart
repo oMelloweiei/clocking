@@ -8,13 +8,13 @@ import 'package:clockify_project/data/controller/user/userController.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isPortrait;
-  final GlobalKey<NavigatorState> navigatorKey;
+  // final GlobalKey<NavigatorState> navigatorKey;
   final Function(String) onSelected;
   final UserController userController;
 
   MyAppBar({
     required this.isPortrait,
-    required this.navigatorKey,
+    // required this.navigatorKey,
     required this.onSelected,
     required this.userController,
   });
@@ -52,7 +52,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               userController.logoutUser();
               Get.offAndToNamed('/$selectedNav');
             }
-            navigatorKey.currentState?.pushReplacementNamed('/$selectedNav');
+            // navigatorKey.currentState?.pushReplacementNamed('/$selectedNav');
             onSelected(selectedNav);
           },
         ),

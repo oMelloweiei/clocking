@@ -1,8 +1,10 @@
+import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:flutter/material.dart';
 
 class TaskTab extends StatefulWidget {
-  const TaskTab({super.key});
+  final Project project;
+  const TaskTab({Key? key, required this.project}) : super(key: key);
 
   @override
   State<TaskTab> createState() => _TaskTabState();

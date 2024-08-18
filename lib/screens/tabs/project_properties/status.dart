@@ -1,10 +1,12 @@
 import 'package:clockify_project/component/box.dart';
+import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class StatusTab extends StatefulWidget {
-  const StatusTab({super.key});
+  final Project project;
+  const StatusTab({Key? key, required this.project}) : super(key: key);
 
   @override
   State<StatusTab> createState() => _StatusTabState();

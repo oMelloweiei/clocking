@@ -1,9 +1,11 @@
 import 'package:clockify_project/component/box.dart';
+import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:flutter/material.dart';
 
 class NoteTab extends StatefulWidget {
-  const NoteTab({super.key});
+  final Project project;
+  const NoteTab({Key? key, required this.project}) : super(key: key);
 
   @override
   State<NoteTab> createState() => _NoteTabState();

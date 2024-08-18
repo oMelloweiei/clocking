@@ -1,6 +1,5 @@
-import 'package:clockify_project/screens/user_selection.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'screens/home.dart';
 import 'screens/profile.dart';
 import 'screens/project_property.dart';
@@ -12,66 +11,54 @@ import 'screens/projects.dart';
 import 'screens/tags.dart';
 import 'screens/timesheet.dart';
 import 'screens/timetracker.dart';
+import 'screens/user_selection.dart';
+import 'data/models/project/project.dart';
 
-// class AppRoutes {
-//   static Route<dynamic> generateRoute(RouteSettings settings) {
-//     switch (settings.name) {
-//       case '/':
-//         return MaterialPageRoute(builder: (_) => UserSelection());
-//       case '/users':
-//         return MaterialPageRoute(builder: (_) => UserSelection());
-//       case '/home':
-//         return MaterialPageRoute(builder: (_) => HomeScreen());
-//       case '/profile':
-//         return MaterialPageRoute(builder: (_) => ProfileScreen());
-//       case '/project_property':
-//         final project = settings.arguments as dynamic;
-//         return MaterialPageRoute(
-//             builder: (_) => ProjectProperty(project: project));
-//       case '/setting':
-//         return MaterialPageRoute(builder: (_) => SettingScreen());
-//       case '/calendar':
-//         return MaterialPageRoute(builder: (_) => const CalendarScreen());
-//       case '/clients':
-//         return MaterialPageRoute(builder: (_) => const ClientsScreen());
-//       case '/kiosks':
-//         return MaterialPageRoute(builder: (_) => const KiosksScreen());
-//       case '/projects':
-//         return MaterialPageRoute(builder: (_) => ProjectsScreen());
-//       case '/tags':
-//         return MaterialPageRoute(builder: (_) => const TagsScreen());
-//       case '/timesheet':
-//         return MaterialPageRoute(builder: (_) => const TimesheetScreen());
-//       case '/timetracker':
-//         return MaterialPageRoute(builder: (_) => const TimeTrackerScreen());
-//       default:
-//         return MaterialPageRoute(builder: (_) => HomeScreen());
-//     }
-//   }
-// }
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _homeNavigatorKey = GlobalKey<NavigatorState>();
+final _projectNavigatorKey = GlobalKey<NavigatorState>();
+final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
-class AppRoutes {
-  static const initialRoute = '/home';
-
-  static final routes = [
-    GetPage(
-      name: '/home',
-      page: () => HomeScreen(),
-      children: [
-        GetPage(name: '/timetracker', page: () => TimeTrackerScreen()),
-        GetPage(name: '/calendar', page: () => CalendarScreen()),
-        GetPage(name: '/tags', page: () => TagsScreen()),
-        GetPage(name: '/clients', page: () => ClientsScreen()),
-        GetPage(name: '/projects', page: () => ProjectsScreen()),
-        GetPage(name: '/kiosks', page: () => KiosksScreen()),
-        GetPage(name: '/timesheets', page: () => TimesheetScreen()),
-        GetPage(name: '/profile', page: () => ProfileScreen()),
-        GetPage(name: '/setting', page: () => SettingScreen()),
-        GetPage(
-          name: '/project_property',
-          page: () => ProjectProperty(project: Get.arguments),
-        ),
-      ],
-    ),
-  ];
-}
+final router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/login',
+    routes: [
+      GoRoute(
+          path: '/login',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) => UserSelection()),
+      ShellRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          navigatorKey: _homeNavigatorKey,
+          builder: (context, state, child) => SidebarScaffold(child: child),
+          routes: [
+            GoRoute(
+                path: '/timetracker',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => TimeTrackerScreen()),
+            GoRoute(
+                path: '/calendar',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => CalendarScreen()),
+            GoRoute(
+                path: '/tag',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => TagsScreen()),
+            GoRoute(
+                path: '/client',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => ClientsScreen()),
+            GoRoute(
+                path: '/project',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => ProjectsScreen()),
+            GoRoute(
+                path: '/kiosk',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => KiosksScreen()),
+            GoRoute(
+                path: '/timesheet',
+                parentNavigatorKey: _homeNavigatorKey,
+                builder: (context, state) => TimesheetScreen()),
+          ])
+    ]);
