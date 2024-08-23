@@ -50,14 +50,16 @@ var clients = [
   {
     'name': 'Mr.Somchai(init)',
     'address': '4/59 Soi Vachirathamsathit Sukhumvit Nong Bon Prawet',
-    'currency': 'BAHT'
+    'currency': 'BAHT',
+    'note': ''
   },
   {
     'name': 'Julia Sandip(init)',
     'address': '47 St Andrews Lane, Cwmaman',
-    'currency': 'USD'
+    'currency': 'USD',
+    'note': ''
   },
-  {'name': 'Karel Ane(init)', 'address': '', 'currency': 'USD'},
+  {'name': 'Karel Ane(init)', 'address': '', 'currency': 'USD', 'note': ''},
 ];
 
 var kiosks = [
@@ -117,7 +119,8 @@ Future<void> initializeSampleData() async {
     var client = Client.create(
         name: clientData['name'],
         address: clientData['address'],
-        currency: clientData['currency']);
+        currency: clientData['currency'],
+        note: clientData['note']);
     clientBox.put(client.id, client);
   }
 

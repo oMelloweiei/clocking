@@ -1,7 +1,9 @@
 import 'package:clockify_project/popups/user_notifications.dart';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:get/get.dart';
+
 import 'package:clockify_project/popups/profilecard.dart';
 import 'package:clockify_project/color.dart';
 import 'package:clockify_project/data/controller/user/userController.dart';
@@ -48,11 +50,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         const SizedBox(width: 10),
         ProfileCard(
           onSelected: (String selectedNav) {
-            if (selectedNav == 'users') {
-              userController.logoutUser();
-              Get.offAndToNamed('/$selectedNav');
+            if (selectedNav == '/login') {
+              GoRouter.of(context).go(selectedNav);
             }
-            // navigatorKey.currentState?.pushReplacementNamed('/$selectedNav');
+            userController.logoutUser();
             onSelected(selectedNav);
           },
         ),

@@ -6,6 +6,7 @@ class Infoboxcolumn extends StatelessWidget {
   final Color? borderColor;
   final List<double>? padding;
   final int index;
+  final int totalItems;
 
   const Infoboxcolumn({
     required this.index,
@@ -13,6 +14,7 @@ class Infoboxcolumn extends StatelessWidget {
     this.borderColor,
     this.padding,
     required this.child,
+    required this.totalItems,
     Key? key,
   }) : super(key: key);
 
@@ -26,9 +28,14 @@ class Infoboxcolumn extends StatelessWidget {
         horizontal: defaultPadding[1],
       ),
       decoration: BoxDecoration(
-        // borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
+        borderRadius: BorderRadius.vertical(
+          top: index == 0 ? Radius.circular(10) : Radius.zero,
+          bottom: index == totalItems - 1 ? Radius.circular(10) : Radius.zero,
+        ),
         border: Border(
-            bottom: BorderSide(color: Colors.grey),
+            bottom: index == totalItems - 1
+                ? BorderSide.none
+                : BorderSide(color: Colors.grey),
             top: index == 0
                 ? BorderSide.none
                 : BorderSide(color: Colors.grey[200]!)),

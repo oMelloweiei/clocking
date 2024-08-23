@@ -10,8 +10,6 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Selected Widget: $selectedWidget');
-    print('Content: $content');
     return Container(
       color: subcolor,
       width: 265,

@@ -14,10 +14,6 @@ class UserController extends GetxController {
     _loadUsers();
   }
 
-  List<String> getuserslist() {
-    return users.map((user) => user.name).toList();
-  }
-
   void _loadUsers() {
     users.assignAll(_userBox.values.toList());
   }

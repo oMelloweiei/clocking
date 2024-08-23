@@ -17,7 +17,7 @@ import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/data/models/tag/tag.dart';
 import 'package:clockify_project/data/models/timetrack/timetrack.dart';
 import 'package:clockify_project/fortest.dart';
-import 'package:get/get.dart';
+
 import 'package:clockify_project/routes.dart';
 import 'package:clockify_project/screenconfig.dart';
 import 'package:clockify_project/texttheme.dart';

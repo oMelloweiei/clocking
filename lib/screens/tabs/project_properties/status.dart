@@ -2,7 +2,14 @@ import 'package:clockify_project/component/box.dart';
 import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:flutter/material.dart';
+// import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:pie_chart/pie_chart.dart';
+
+class _ChartData {
+  _ChartData(this.category, this.hours);
+  final String category;
+  final double hours;
+}
 
 class StatusTab extends StatefulWidget {
   final Project project;
@@ -109,6 +116,14 @@ class _StatusTabState extends State<StatusTab> with ScrollableMixin<StatusTab> {
         ),
       ),
     );
+  }
+
+  List<_ChartData> _getChartData() {
+    double totalTracked = _tasks.fold(0, (sum, item) => sum + item['tracked']);
+    return [
+      _ChartData('Billable', totalTracked),
+      _ChartData('Non-Billable', 0),
+    ];
   }
 
   Map<String, double> _createDataMap() {

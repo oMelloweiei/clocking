@@ -1,16 +1,17 @@
-import 'package:clockify_project/component/color_dropdown.dart';
+import 'package:clockify_project/component/create_project_dialog.dart';
 import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/component/tablebox.dart';
 import 'package:clockify_project/component/headtablebox.dart';
+import 'package:clockify_project/data/controller/clientController.dart';
 import 'package:clockify_project/data/controller/project/projectController.dart';
 import 'package:clockify_project/data/controller/project/projectsettingController.dart';
-import 'package:clockify_project/data/controller/user/userController.dart';
+import 'package:clockify_project/data/models/client/client.dart';
 import 'package:clockify_project/data/models/project/project.dart';
-import 'package:clockify_project/data/models/project_setting/project_setting.dart';
 import 'package:clockify_project/mixin.dart';
 import 'package:clockify_project/screenconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({
@@ -23,16 +24,15 @@ class ProjectsScreen extends StatefulWidget {
 
 class _ProjectsScreenState extends State<ProjectsScreen>
     with ScrollableMixin<ProjectsScreen> {
-  late List<String> dropdownValue = [
-    'Select client',
-  ];
+  late List<Client> dropdownClient = [];
   bool isChecked = false;
   final TextEditingController searchController = TextEditingController();
   final TextEditingController addProjectController = TextEditingController();
   final ProjectController projectController = Get.put(ProjectController());
-  final UserController userController = Get.put(UserController());
+  final ClientController clientController = Get.put(ClientController());
   final ProjectSettingController projectsetting =
       Get.put(ProjectSettingController());
+  String dropdownValue = 'Show active';
 
   @override
   void initState() {
@@ -42,134 +42,8 @@ class _ProjectsScreenState extends State<ProjectsScreen>
   }
 
   void _initializeDropdown() {
-    final usersList = userController.getuserslist();
-    dropdownValue = ['Select client'] + usersList;
+    dropdownClient = clientController.clients.toList();
     setState(() {});
-  }
-
-  Future openDialog() async {
-    final _formKey = GlobalKey<FormState>();
-    String selectedDropdownValue = dropdownValue.first;
-
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Container(
-          width: MediaQuery.of(context).size.width * 0.3,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Create New Project'),
-                Divider(thickness: 2, color: Colors.black),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: addProjectController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          hintText: 'Enter project name',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a project name';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: DropdownMenu<String>(
-                        initialSelection: selectedDropdownValue,
-                        onSelected: (String? newValue) {
-                          setState(() {
-                            selectedDropdownValue = newValue!;
-                          });
-                        },
-                        dropdownMenuEntries: dropdownValue
-                            .map<DropdownMenuEntry<String>>((String value) {
-                          return DropdownMenuEntry<String>(
-                            value: value,
-                            label: value,
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                ColorDropdownButton(),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.grey,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.blue,
-            ),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                final String projectName = addProjectController.text;
-                final newProject = Project.create(
-                  name: projectName,
-                  clientKey: selectedDropdownValue,
-                  trackedKey: '',
-                  access: '',
-                );
-
-                projectController.saveProjectRecord(newProject);
-
-                final newprojectsetting = ProjectSetting.create(
-                    id: newProject.id,
-                    clientKey: newProject.clientKey,
-                    color: Colors.blue,
-                    onBillable: false,
-                    billablerate: 0.0,
-                    estimate: '');
-
-                projectsetting.createSetting(newprojectsetting);
-
-                addProjectController.clear();
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text(
-              'Create',
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -238,18 +112,32 @@ class _ProjectsScreenState extends State<ProjectsScreen>
   Widget _buildDropdownAndSearchField(bool isMobile, bool isPortrait) {
     return Row(
       children: [
-        DropdownMenu<String>(
-          initialSelection: dropdownValue.first,
-          onSelected: (String? newValue) {
-            setState(() {
-              dropdownValue.first = newValue!;
-            });
-          },
-          dropdownMenuEntries:
-              dropdownValue.map<DropdownMenuEntry<String>>((String value) {
-            return DropdownMenuEntry<String>(value: value, label: value);
-          }).toList(),
-        ),
+        DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black38, width: 1),
+              borderRadius: BorderRadius.circular(7),
+            ),
+            child: DropdownButton<String>(
+              icon: const Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.arrow_drop_down_rounded)),
+              underline: Container(),
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: <String>['Show active', 'Option 2', 'Option 3', 'Option 4']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 10), child: Text(value)),
+                );
+              }).toList(),
+            )),
         SizedBox(width: isMobile ? 10 : 20),
         Expanded(
           child: TextFormField(
@@ -282,7 +170,10 @@ class _ProjectsScreenState extends State<ProjectsScreen>
       ),
       onPressed: () {
         setState(() {
-          openDialog();
+          createProjectDialog(
+              context: context,
+              dropdownClient: dropdownClient,
+              addProjectController: addProjectController);
         });
       },
       child: const Text(
@@ -366,8 +257,9 @@ class _ProjectsScreenState extends State<ProjectsScreen>
 
   Widget _buildlistproject(bool isMobile, bool isPortrait) {
     final projects = projectController.projects;
-    return Obx(
-      () => ListView.builder(
+    return Obx(() {
+      final totalItems = projects.length;
+      return ListView.builder(
         physics: scrollable
             ? AlwaysScrollableScrollPhysics()
             : NeverScrollableScrollPhysics(),
@@ -375,24 +267,26 @@ class _ProjectsScreenState extends State<ProjectsScreen>
         itemCount: projects.length,
         itemBuilder: (context, index) {
           final project = projects[index];
+          final client = clientController.getClientById(project.clientKey);
           return GestureDetector(
               onTap: () {
-                Navigator.of(context).pushReplacementNamed(
-                  '/project_property',
-                  arguments: project,
+                GoRouter.of(context).go(
+                  '/project/property_${project.name}',
+                  extra: project.id,
                 );
               },
               child: Infoboxcolumn(
+                  totalItems: totalItems,
                   index: index,
                   child: isMobile && isPortrait
-                      ? backdrop(project)
-                      : regularRow(project)));
+                      ? backdrop(project, client)
+                      : regularRow(project, client)));
         },
-      ),
-    );
+      );
+    });
   }
 
-  Widget regularRow(Project project) {
+  Widget regularRow(Project project, Client? client) {
     return Row(
       children: [
         Expanded(
@@ -414,9 +308,10 @@ class _ProjectsScreenState extends State<ProjectsScreen>
               VerticalDivider(),
               Flexible(
                   child: Text(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      project.clientKey)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                client?.name ?? 'Unknown Client',
+              )),
             ])),
         Expanded(
             flex: 2,
@@ -438,7 +333,7 @@ class _ProjectsScreenState extends State<ProjectsScreen>
     );
   }
 
-  Widget backdrop(Project project) {
+  Widget backdrop(Project project, Client? client) {
     return Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
@@ -447,7 +342,9 @@ class _ProjectsScreenState extends State<ProjectsScreen>
           children: [
             ListTile(
               title: Text('Client'),
-              subtitle: Text(project.clientKey),
+              subtitle: Text(
+                client?.name ?? 'Unknown Client',
+              ),
             ),
             ListTile(
               title: Text('Tracked'),

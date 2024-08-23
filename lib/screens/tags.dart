@@ -76,9 +76,8 @@ class _TagsScreenState extends State<TagsScreen>
   }
 
   Widget _buildHeader(bool isMobile, bool isPortrait, double screenheight) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      color: Colors.amber,
       child: Column(
         children: [
           if (isMobile && isPortrait)
@@ -93,16 +92,15 @@ class _TagsScreenState extends State<TagsScreen>
           else
             Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  flex: 5,
+                  flex: 2,
                   child: _buildDropdownAndSearchField(isMobile, isPortrait),
                 ),
-                SizedBox(width: 20),
+                Spacer(),
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: _buildAddTagField(isMobile, screenheight),
                 ),
               ],
@@ -115,21 +113,32 @@ class _TagsScreenState extends State<TagsScreen>
   Widget _buildDropdownAndSearchField(bool isMobile, bool isPortrait) {
     return Row(
       children: [
-        DropdownButton<String>(
-          value: dropdownValue,
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue = newValue!;
-            });
-          },
-          items: <String>['Show active', 'Option 2', 'Option 3', 'Option 4']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
+        DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black38, width: 1),
+              borderRadius: BorderRadius.circular(7),
+            ),
+            child: DropdownButton<String>(
+              icon: const Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.arrow_drop_down_rounded)),
+              underline: Container(),
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: <String>['Show active', 'Option 2', 'Option 3', 'Option 4']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 10), child: Text(value)),
+                );
+              }).toList(),
+            )),
         SizedBox(width: isMobile ? 10 : 20),
         Expanded(
           child: TextFormField(
@@ -257,8 +266,9 @@ class _TagsScreenState extends State<TagsScreen>
   }
 
   Widget _buildListTag() {
-    return Obx(
-      () => ListView.builder(
+    return Obx(() {
+      final int totalItems = filteredTags.length;
+      return ListView.builder(
         physics: scrollable
             ? AlwaysScrollableScrollPhysics()
             : NeverScrollableScrollPhysics(),
@@ -267,6 +277,7 @@ class _TagsScreenState extends State<TagsScreen>
         itemBuilder: (context, index) {
           final tag = filteredTags[index];
           return Infoboxcolumn(
+            totalItems: totalItems,
             index: index,
             child: Row(
               children: [
@@ -299,7 +310,7 @@ class _TagsScreenState extends State<TagsScreen>
             ),
           );
         },
-      ),
-    );
+      );
+    });
   }
 }

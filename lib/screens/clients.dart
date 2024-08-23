@@ -1,3 +1,4 @@
+import 'package:clockify_project/component/edit_client.dialog.dart';
 import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/component/tablebox.dart';
 import 'package:clockify_project/component/headtablebox.dart';
@@ -96,21 +97,32 @@ class _ClientsScreenState extends State<ClientsScreen>
   Widget _buildDropdownAndSearchField(bool isMobile, bool isPortrait) {
     return Row(
       children: [
-        DropdownButton<String>(
-          value: dropdownValue,
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue = newValue!;
-            });
-          },
-          items: <String>['Show active', 'Option 2', 'Option 3', 'Option 4']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
+        DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black38, width: 1),
+              borderRadius: BorderRadius.circular(7),
+            ),
+            child: DropdownButton<String>(
+              icon: const Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.arrow_drop_down_rounded)),
+              underline: Container(),
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: <String>['Show active', 'Option 2', 'Option 3', 'Option 4']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 10), child: Text(value)),
+                );
+              }).toList(),
+            )),
         SizedBox(width: isMobile ? 10 : 20),
         Expanded(
           child: TextFormField(
@@ -244,8 +256,9 @@ class _ClientsScreenState extends State<ClientsScreen>
 
   Widget _buildclientList(bool isMobile, bool isPortrait) {
     final clients = clientController.clients;
-    return Obx(
-      () => ListView.builder(
+    return Obx(() {
+      final int totalItems = clients.length;
+      return ListView.builder(
         physics: scrollable
             ? AlwaysScrollableScrollPhysics()
             : NeverScrollableScrollPhysics(),
@@ -254,13 +267,14 @@ class _ClientsScreenState extends State<ClientsScreen>
         itemBuilder: (context, index) {
           final client = clients[index];
           return Infoboxcolumn(
+              totalItems: totalItems,
               index: index,
               child: isMobile && isPortrait
                   ? backdrop(client)
                   : regularRow(client));
         },
-      ),
-    );
+      );
+    });
   }
 
   Widget regularRow(Client client) {
@@ -299,7 +313,11 @@ class _ClientsScreenState extends State<ClientsScreen>
           flex: 2,
           child: Row(children: [
             VerticalDivider(),
-            Icon(Icons.edit),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () =>
+                  editClientDialog(client: client, context: context),
+            ),
             VerticalDivider(),
             Icon(Icons.more_vert)
           ]),

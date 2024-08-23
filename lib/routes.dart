@@ -12,12 +12,28 @@ import 'screens/tags.dart';
 import 'screens/timesheet.dart';
 import 'screens/timetracker.dart';
 import 'screens/user_selection.dart';
-import 'data/models/project/project.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _homeNavigatorKey = GlobalKey<NavigatorState>();
-final _projectNavigatorKey = GlobalKey<NavigatorState>();
-final _profileNavigatorKey = GlobalKey<NavigatorState>();
+
+CustomTransitionPage buildCustomPage(Widget child) {
+  return CustomTransitionPage(
+    transitionDuration: Duration(milliseconds: 300),
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurveTween(curve: Curves.easeIn).animate(animation),
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0.0, 0.1), // Start position (slightly off-screen)
+            end: Offset.zero, // End position (on-screen)
+          ).animate(animation),
+          child: child,
+        ),
+      );
+    },
+  );
+}
 
 final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -33,32 +49,58 @@ final router = GoRouter(
           builder: (context, state, child) => SidebarScaffold(child: child),
           routes: [
             GoRoute(
-                path: '/timetracker',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => TimeTrackerScreen()),
+              path: '/timetracker',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => TimeTrackerScreen(),
+            ),
             GoRoute(
-                path: '/calendar',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => CalendarScreen()),
+              path: '/calendar',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => CalendarScreen(),
+            ),
             GoRoute(
-                path: '/tag',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => TagsScreen()),
+              path: '/tag',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => TagsScreen(),
+            ),
             GoRoute(
-                path: '/client',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => ClientsScreen()),
+              path: '/client',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => ClientsScreen(),
+            ),
             GoRoute(
                 path: '/project',
                 parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => ProjectsScreen()),
+                builder: (context, state) => ProjectsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'property_:name',
+                    parentNavigatorKey: _homeNavigatorKey,
+                    builder: (context, state) {
+                      final project_id = state.extra as String;
+                      return ProjectProperty(project_id: project_id);
+                    },
+                  )
+                ]),
             GoRoute(
-                path: '/kiosk',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => KiosksScreen()),
+              path: '/kiosk',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => KiosksScreen(),
+            ),
             GoRoute(
-                path: '/timesheet',
-                parentNavigatorKey: _homeNavigatorKey,
-                builder: (context, state) => TimesheetScreen()),
+              path: '/timesheet',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => TimesheetScreen(),
+            ),
+            GoRoute(
+              path: '/editprofile',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => ProfileScreen(),
+            ),
+            GoRoute(
+              path: '/user_setting',
+              parentNavigatorKey: _homeNavigatorKey,
+              builder: (context, state) => SettingScreen(),
+            ),
           ])
     ]);

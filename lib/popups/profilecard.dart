@@ -66,7 +66,7 @@ class ProfileCard extends StatelessWidget {
     for (var item in popProfileContent) {
       menuItems.add(
         PopupMenuItem<String>(
-          value: item['nav'],
+          value: item['route'],
           child: Container(
               alignment: Alignment.center, child: Text(item['topic']!)),
         ),

@@ -34,8 +34,8 @@ class ClientController extends GetxController {
     clients.add(Client);
   }
 
-  Client? getClientById(String id) {
-    return clients.firstWhereOrNull((Client) => Client.id == id);
+  Client? getClientById(String key) {
+    return clients.firstWhereOrNull((client) => client.id == key);
   }
 
   void removeClientById(String id) {

@@ -4,17 +4,7 @@ import 'package:clockify_project/color.dart';
 import 'package:clockify_project/component/appbar.dart';
 import 'package:clockify_project/component/sidebar.dart';
 import 'package:clockify_project/data/controller/user/userController.dart';
-import 'package:clockify_project/routes.dart';
 import 'package:clockify_project/screenconfig.dart';
-import 'package:clockify_project/screens/calendar.dart';
-import 'package:clockify_project/screens/clients.dart';
-import 'package:clockify_project/screens/kiosks.dart';
-import 'package:clockify_project/screens/profile.dart';
-import 'package:clockify_project/screens/projects.dart';
-import 'package:clockify_project/screens/setting.dart';
-import 'package:clockify_project/screens/tags.dart';
-import 'package:clockify_project/screens/timesheet.dart';
-import 'package:clockify_project/screens/timetracker.dart';
 import 'package:go_router/go_router.dart';
 
 class SidebarScaffold extends StatefulWidget {
@@ -62,21 +52,9 @@ class _SidebarScaffoldState extends State<SidebarScaffold> {
     );
   }
 
-  // Route<dynamic> _onGenerateRoute(RouteSettings settings) {
-  //   return PageRouteBuilder(
-  //     pageBuilder: (_, __, ___) => _getPage(settings.name!),
-  //     transitionDuration: const Duration(milliseconds: 500),
-  //     transitionsBuilder: (_, animation, __, child) {
-  //       return FadeTransition(
-  //         opacity: animation,
-  //         child: child,
-  //       );
-  //     },
-  //   );
-  // }
-
   void _onWidgetSelected(String route) {
     context.go(route);
+
     setState(() {
       _currentRoute = route;
     });

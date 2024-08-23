@@ -21,13 +21,14 @@ class ClientAdapter extends TypeAdapter<Client> {
       name: fields[1] as String,
       address: fields[2] as String,
       currency: fields[3] as String,
+      note: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Client obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ClientAdapter extends TypeAdapter<Client> {
       ..writeByte(2)
       ..write(obj.address)
       ..writeByte(3)
-      ..write(obj.currency);
+      ..write(obj.currency)
+      ..writeByte(4)
+      ..write(obj.note);
   }
 
   @override

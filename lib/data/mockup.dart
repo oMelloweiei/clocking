@@ -47,7 +47,7 @@ var content = [
 ];
 
 var popProfileContent = [
-  {'topic': 'Profile', 'nav': 'profile'},
-  {'topic': 'Setting', 'nav': 'setting'},
-  {'topic': 'Log out', 'nav': 'users'},
+  {'topic': 'Profile', 'route': '/editprofile'},
+  {'topic': 'Setting', 'route': '/user_setting'},
+  {'topic': 'Log out', 'route': '/login'},
 ];

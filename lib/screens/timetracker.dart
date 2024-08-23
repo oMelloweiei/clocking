@@ -70,8 +70,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     screenwidth = MediaQuery.of(context).size.width;
     screenheight = MediaQuery.of(context).size.height;
 
-    return SingleChildScrollView(
-        child: Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(
         vertical: !isMobile
             ? screenheight * 0.06
@@ -85,15 +84,15 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: [
-          isMobile && isPortrait ? _buildMobileBox() : _buildBox(),
+          Expanded(
+            flex: 1,
+            child: isMobile && isPortrait ? _buildMobileBox() : _buildBox(),
+          ),
           SizedBox(height: 20),
-          Text('Today is $today'),
-          Text('Now : $now'),
-          SizedBox(height: 20),
-          _buildHistories(),
+          Expanded(flex: 4, child: _buildHistories()),
         ],
       ),
-    ));
+    );
   }
 
   Widget _buildButton(bool isRunning) {
@@ -227,6 +226,7 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
     final isRunning = timerUtils.isRunning;
 
     return Container(
+      // height: 300,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -403,14 +403,17 @@ class _TimeTrackerScreenState extends State<TimeTrackerScreen> {
         spacedHistoryWidgets.removeLast();
       }
 
-      return Column(children: spacedHistoryWidgets);
+      return SingleChildScrollView(
+          child: Column(children: spacedHistoryWidgets));
     });
   }
 
   Widget _buildTimetrack(History history, List<Timetrack> timetracks) {
+    final totalItems = timetracks.length;
     final trackWidgets = timetracks.map<Widget>((timetrack) {
       if (history.timetracksKey.contains(timetrack.id)) {
         return Infoboxcolumn(
+          totalItems: totalItems,
           index: timetracks.indexOf(timetrack),
           child: Row(
             children: [

@@ -17,11 +17,15 @@ class Client extends HiveObject {
   @HiveField(3)
   final String currency;
 
+  @HiveField(4)
+  final String note;
+
   Client({
     required this.id,
     required this.name,
     required this.address,
     required this.currency,
+    required this.note,
   });
 
   // Factory constructor to create a Client from JSON
@@ -31,6 +35,7 @@ class Client extends HiveObject {
       name: json['name'] as String,
       address: json['address'] as String,
       currency: json['currency'] as String,
+      note: json['note'] as String,
     );
   }
 
@@ -41,6 +46,7 @@ class Client extends HiveObject {
       'name': name,
       'address': address,
       'currency': currency,
+      'note': note,
     };
   }
 
@@ -49,12 +55,14 @@ class Client extends HiveObject {
     required String? name,
     required String? address,
     required String? currency,
+    required String? note,
   }) {
     return Client(
       id: const Uuid().v1(),
       name: name ?? '',
       address: address ?? '',
       currency: currency ?? 'USD',
+      note: currency ?? '',
     );
   }
 }
