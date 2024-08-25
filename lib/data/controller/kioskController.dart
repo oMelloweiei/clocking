@@ -26,9 +26,20 @@ class KioskController extends GetxController {
     } else {}
   }
 
-  void addKiosk(Kiosk Kiosk) {
-    _kioskBox.add(Kiosk);
-    kiosks.add(Kiosk);
+  Future<void> saveKioskRecord(Kiosk kiosk) async {
+    try {
+      await _kioskBox.put(kiosk.id, kiosk);
+      kiosks.add(kiosk);
+
+      final currentUser = UserController.instance.getCurrentUser();
+
+      if (currentUser != null) {
+        currentUser.kiosksKey.add(kiosk.id);
+        UserController.instance.updateUser(currentUser);
+      }
+    } catch (e) {
+      throw Exception("Something went wrong. Please try again $e");
+    }
   }
 
   Kiosk? getKioskById(String id) {

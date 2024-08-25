@@ -37,7 +37,7 @@ class TagController extends GetxController {
     final currentUser = userController.getCurrentUser();
 
     if (currentUser != null) {
-      _tagBox.put(tag.id, tag); // Use put instead of add to ensure unique IDs
+      _tagBox.put(tag.id, tag);
       tags.add(tag);
       currentUser.tagsKey.add(tag.id);
       userController.updateUser(currentUser);

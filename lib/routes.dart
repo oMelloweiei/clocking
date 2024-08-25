@@ -78,7 +78,7 @@ final router = GoRouter(
                     parentNavigatorKey: _homeNavigatorKey,
                     builder: (context, state) {
                       final project_id = state.extra as String;
-                      return ProjectProperty(project_id: project_id);
+                      return ProjectProperty(projectId: project_id);
                     },
                   )
                 ]),

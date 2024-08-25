@@ -1,3 +1,4 @@
+import 'package:clockify_project/color.dart';
 import 'package:clockify_project/component/create_kiosk_dialog.dart';
 import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/component/tablebox.dart';
@@ -14,7 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class KiosksScreen extends StatefulWidget {
-  const KiosksScreen({super.key});
+  const KiosksScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<KiosksScreen> createState() => _KiosksScreenState();
@@ -23,10 +26,9 @@ class KiosksScreen extends StatefulWidget {
 class _KiosksScreenState extends State<KiosksScreen>
     with ScrollableMixin<KiosksScreen> {
   String dropdownValue = 'Show active';
-  String dropdowndata = 'Everyone';
+
   bool isChecked = false;
   final TextEditingController searchController = TextEditingController();
-  final TextEditingController addKioskController = TextEditingController();
   final ProjectController projectController = Get.put(ProjectController());
   final KioskController kioskController = Get.put(KioskController());
   final UserController userController = Get.put(UserController());
@@ -174,10 +176,10 @@ class _KiosksScreenState extends State<KiosksScreen>
       onPressed: () {
         setState(() {
           createKioskDialog(
-              context: context,
-              assigneesList: assigneesList,
-              projectList: projectsList,
-              addKioskController: addKioskController);
+            context: context,
+            assigneesList: assigneesList,
+            projectList: projectsList,
+          );
         });
       },
       child: const Text(
@@ -274,29 +276,13 @@ class _KiosksScreenState extends State<KiosksScreen>
   }
 
   Widget regularRow(Kiosk kiosk) {
-    return Row(
+    return IntrinsicHeight(
+        child: Row(
       children: [
         Expanded(flex: 3, child: Text(kiosk.name)),
         Expanded(
             flex: 3,
-            child: Row(children: [
-              VerticalDivider(),
-              DropdownButton<String>(
-                value: dropdowndata,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropdowndata = newValue!;
-                  });
-                },
-                items: <String>['Everyone', 'Option 2', 'Option 3', 'Option 4']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ])),
+            child: Row(children: [VerticalDivider(), dropdownAssign(kiosk)])),
         Expanded(
             flex: 6,
             child: Row(children: [
@@ -311,6 +297,42 @@ class _KiosksScreenState extends State<KiosksScreen>
           child: Row(children: [VerticalDivider(), Icon(Icons.more_vert)]),
         )
       ],
+    ));
+  }
+
+  Widget dropdownAssign(Kiosk kiosk) {
+    String dropdowndata = 'Everyone';
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: screenBG,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: DropdownButton<String>(
+          icon: const Icon(Icons.arrow_drop_down_rounded),
+          underline: Container(),
+          value: dropdowndata,
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdowndata = newValue!;
+            });
+          },
+          items: <String>['Everyone', 'Option 2', 'Option 3', 'Option 4']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  value,
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 

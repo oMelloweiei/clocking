@@ -1,4 +1,5 @@
 import 'package:clockify_project/data/controller/kioskController.dart';
+import 'package:clockify_project/data/models/entry/entry.dart';
 import 'package:clockify_project/data/models/project/project.dart';
 import 'package:clockify_project/data/models/user/user.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ Future<void> createKioskDialog({
   required BuildContext context,
   required List<User> assigneesList,
   required List<Project> projectList,
-  required TextEditingController addKioskController,
 }) async {
   final _formKey = GlobalKey<FormState>();
   final KioskController kioskController = Get.find<KioskController>();
@@ -18,6 +18,9 @@ Future<void> createKioskDialog({
 
   final Rx<User?> selectedAssignees =
       Rx<User?>(assigneesList.isNotEmpty ? assigneesList.first : null);
+
+  final nameController = TextEditingController();
+  final urlController = TextEditingController();
 
   await showDialog(
     context: context,
@@ -35,7 +38,7 @@ Future<void> createKioskDialog({
               Divider(thickness: 1, color: Colors.black),
               const SizedBox(height: 10),
               Text('Name'),
-              _buildNameField(addKioskController),
+              _buildNameField(nameController, 'Add name'),
               const SizedBox(height: 5),
               Text('Assignees'),
               const SizedBox(height: 5),
@@ -50,7 +53,11 @@ Future<void> createKioskDialog({
                 projectList,
                 selectedProject,
               ),
-              const SizedBox(height: 20),
+              Text('URL'),
+              const SizedBox(height: 5),
+              _buildNameField(urlController, 'Add URL'),
+              const SizedBox(height: 5),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -58,7 +65,9 @@ Future<void> createKioskDialog({
       actions: _buildActions(
         context,
         _formKey,
-        addKioskController,
+        nameController,
+        urlController,
+        kioskController,
         selectedAssignees,
         selectedProject,
       ),
@@ -73,15 +82,14 @@ Widget _buildTitle() {
   );
 }
 
-Widget _buildNameField(TextEditingController controller) {
+Widget _buildNameField(TextEditingController controller, String hintText) {
   return TextFormField(
     controller: controller,
-    decoration: const InputDecoration(
-      border: OutlineInputBorder(
+    decoration: InputDecoration(
+      border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      hintText: 'Enter name',
-      labelText: 'Name',
+      hintText: hintText,
     ),
     validator: (value) {
       if (value == null || value.isEmpty) {
@@ -152,7 +160,9 @@ Widget _buildProjectDropdown(
 List<Widget> _buildActions(
   BuildContext context,
   GlobalKey<FormState> formKey,
-  TextEditingController addKioskController,
+  TextEditingController nameController,
+  TextEditingController urlController,
+  KioskController kioskController,
   Rx<User?> selectedAssignees,
   Rx<Project?> selectedProject,
 ) {
@@ -183,17 +193,19 @@ List<Widget> _buildActions(
       ),
       onPressed: () {
         if (formKey.currentState!.validate()) {
-          if (selectedAssignees != null && selectedProject != null) {
-            // Handle the creation logic here
-            // Example:
-            // final newKiosk = Kiosk(
-            //   name: addKioskController.text,
-            //   assignee: selectedAssignees,
-            //   project: selectedProject,
-            // );
-            // kioskController.createKiosk(newKiosk);
+          final selectAssignValue = selectedAssignees.value;
+          final selectProjectValue = selectedProject.value;
+          if (selectAssignValue != null && selectProjectValue != null) {
+            final newKiosk = Kiosk.create(
+              name: nameController.text,
+              assign: selectAssignValue.id,
+              projectKey: selectProjectValue.id,
+              url: urlController.text,
+            );
+            kioskController.saveKioskRecord(newKiosk);
 
-            addKioskController.clear();
+            nameController.clear();
+            urlController.clear();
             Navigator.of(context).pop();
           } else {
             // Handle the case where assignee or project is null

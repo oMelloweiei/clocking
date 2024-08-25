@@ -51,7 +51,8 @@ var clients = [
     'name': 'Mr.Somchai(init)',
     'address': '4/59 Soi Vachirathamsathit Sukhumvit Nong Bon Prawet',
     'currency': 'BAHT',
-    'note': ''
+    'note':
+        'ขอโทษนะอาบาไน ตอนนี้ฉันไม่ได้ โกรธเพราะเธอ ไม่ได้แค้นใครทั้งนั้น ตอนนี้เพียง แต่...รู้สึกว่าโลกนี่ช่างสบายสะ เหลือเกินเหนือฟ้าใต้ล่า ข้าประเสริฐที่สุด'
   },
   {
     'name': 'Julia Sandip(init)',
@@ -67,11 +68,13 @@ var kiosks = [
     'name': 'Healworld(init)',
     'assign': 'Everyone',
     'url': 'www.google.com',
+    'projectKey': ''
   },
   {
     'name': 'Healworld(init)',
     'assign': 'Everyone',
     'url': 'www.google.com',
+    'projectKey': ''
   },
 ];
 
@@ -127,6 +130,7 @@ Future<void> initializeSampleData() async {
   // Create kiosks and store their IDs
   for (var kioskData in kiosks) {
     var kiosk = Kiosk.create(
+        projectKey: kioskData['projectKey'],
         name: kioskData['name'],
         assign: kioskData['assign'],
         url: kioskData['url']);

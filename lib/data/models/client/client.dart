@@ -62,7 +62,7 @@ class Client extends HiveObject {
       name: name ?? '',
       address: address ?? '',
       currency: currency ?? 'USD',
-      note: currency ?? '',
+      note: note ?? '',
     );
   }
 }

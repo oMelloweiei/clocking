@@ -15,12 +15,16 @@ class Kiosk extends HiveObject {
   final String assign;
 
   @HiveField(3)
+  final String projectKey;
+
+  @HiveField(4)
   final String url;
 
   Kiosk({
     required this.id,
     required this.name,
     required this.assign,
+    required this.projectKey,
     required this.url,
   });
 
@@ -30,6 +34,7 @@ class Kiosk extends HiveObject {
       id: json['id'] as String,
       name: json['name'] as String,
       assign: json['assign'] as String,
+      projectKey: json['projectKey'] as String,
       url: json['url'] as String,
     );
   }
@@ -40,6 +45,7 @@ class Kiosk extends HiveObject {
       'id': id,
       'name': name,
       'assign': assign,
+      'projectKey': projectKey,
       'url': url,
     };
   }
@@ -49,12 +55,14 @@ class Kiosk extends HiveObject {
     required String? name,
     required String? assign,
     required String? url,
+    required String? projectKey,
   }) {
     return Kiosk(
       id: const Uuid().v1(),
       name: name ?? '',
       assign: assign ?? '',
       url: url ?? 'USD',
+      projectKey: projectKey ?? '',
     );
   }
 }

@@ -11,8 +11,8 @@ import 'package:get/get.dart';
 enum ProjectTab { TASK, ACCESS, STATUS, NOTE, SETTING }
 
 class ProjectProperty extends StatefulWidget {
-  final String project_id;
-  ProjectProperty({Key? key, required this.project_id}) : super(key: key);
+  final String projectId;
+  ProjectProperty({Key? key, required this.projectId}) : super(key: key);
 
   @override
   State<ProjectProperty> createState() => _ProjectPropertyState();
@@ -29,7 +29,7 @@ class _ProjectPropertyState extends State<ProjectProperty> {
   @override
   void initState() {
     super.initState();
-    final project = projectController.getProjectById(widget.project_id);
+    final project = projectController.getProjectById(widget.projectId);
     if (project != null) {
       _project = project.obs;
     }

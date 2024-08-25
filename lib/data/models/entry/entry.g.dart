@@ -20,14 +20,15 @@ class KioskAdapter extends TypeAdapter<Kiosk> {
       id: fields[0] as String,
       name: fields[1] as String,
       assign: fields[2] as String,
-      url: fields[3] as String,
+      projectKey: fields[3] as String,
+      url: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Kiosk obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,6 +36,8 @@ class KioskAdapter extends TypeAdapter<Kiosk> {
       ..writeByte(2)
       ..write(obj.assign)
       ..writeByte(3)
+      ..write(obj.projectKey)
+      ..writeByte(4)
       ..write(obj.url);
   }
 

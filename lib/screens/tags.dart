@@ -1,3 +1,4 @@
+import 'package:clockify_project/component/edit_tag_dialog.dart';
 import 'package:clockify_project/component/infoboxcolumn.dart';
 import 'package:clockify_project/component/tablebox.dart';
 import 'package:clockify_project/component/headtablebox.dart';
@@ -277,40 +278,45 @@ class _TagsScreenState extends State<TagsScreen>
         itemBuilder: (context, index) {
           final tag = filteredTags[index];
           return Infoboxcolumn(
-            totalItems: totalItems,
-            index: index,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        },
-                      ),
-                      Text(tag.name),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 20),
-                Row(
-                  children: [
-                    VerticalDivider(),
-                    Icon(Icons.edit),
-                    VerticalDivider(),
-                    Icon(Icons.more_vert),
-                  ],
-                ),
-              ],
-            ),
-          );
+              totalItems: totalItems, index: index, child: listInner(tag));
         },
       );
     });
+  }
+
+  Widget listInner(Tag tag) {
+    return IntrinsicHeight(
+        child: Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Row(
+            children: [
+              Checkbox(
+                value: isChecked,
+                onChanged: (bool? value) {
+                  setState(() {
+                    isChecked = value!;
+                  });
+                },
+              ),
+              Text(tag.name),
+            ],
+          ),
+        ),
+        SizedBox(width: 20),
+        Row(
+          children: [
+            VerticalDivider(),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => editTagDialog(tag: tag, context: context),
+            ),
+            VerticalDivider(),
+            Icon(Icons.more_vert),
+          ],
+        ),
+      ],
+    ));
   }
 }

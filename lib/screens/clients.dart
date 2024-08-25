@@ -278,7 +278,8 @@ class _ClientsScreenState extends State<ClientsScreen>
   }
 
   Widget regularRow(Client client) {
-    return Row(
+    return IntrinsicHeight(
+        child: Row(
       children: [
         Expanded(
             flex: 3,
@@ -323,7 +324,7 @@ class _ClientsScreenState extends State<ClientsScreen>
           ]),
         )
       ],
-    );
+    ));
   }
 
   // Widget backdrop(int index) {

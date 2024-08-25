@@ -287,7 +287,8 @@ class _ProjectsScreenState extends State<ProjectsScreen>
   }
 
   Widget regularRow(Project project, Client? client) {
-    return Row(
+    return IntrinsicHeight(
+        child: Row(
       children: [
         Expanded(
             flex: 3,
@@ -330,7 +331,7 @@ class _ProjectsScreenState extends State<ProjectsScreen>
           child: Row(children: [VerticalDivider(), Icon(Icons.more_vert)]),
         )
       ],
-    );
+    ));
   }
 
   Widget backdrop(Project project, Client? client) {
