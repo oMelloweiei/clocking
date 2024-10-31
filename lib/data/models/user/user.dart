@@ -19,7 +19,7 @@ class User extends HiveObject {
   });
 
   @HiveField(0)
-  final String id;
+  final String id; // ไม่่ต้องก็ได้
 
   @HiveField(1)
   String name;

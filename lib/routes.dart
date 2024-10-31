@@ -15,6 +15,7 @@ import 'screens/timetracker.dart';
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      // สร้าง ชี้ไปที่ login
       case '/':
         return MaterialPageRoute(builder: (_) => UserSelection());
       case '/users':
